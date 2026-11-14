@@ -273,21 +273,33 @@ button:focus-visible{outline:4px solid var(--ink);outline-offset:3px}
     sig.onpointermove=function(e){if(!drawing)return;var p=pos(e);c.lineTo(p[0],p[1]);c.stroke();};
     sig.onpointerup=function(){
       drawing=false;
-      if(!signed){signed=true;signote.textContent='Semnat. Valabil juridic, cam deloc.';}
+      if(!signed){signed=true;signote.textContent='Contract semnat. Presiune în bată.';}
     };
   }
 
+  var song=null;
+  try{song=new Audio('satalana.mp3');song.preload='auto';}catch(e){song=null;}
+  function playSong(){
+    if(!song){fanfare();return;}
+    try{
+      song.pause();song.currentTime=9;
+      var p=song.play();
+      if(p&&p.catch){p.catch(fanfare);}
+    }catch(e){fanfare();}
+  }
+  function stopSong(){if(song){try{song.pause();}catch(e){}}}
+
   yes.addEventListener('click',function(){
-    fanfare();confetti();
+    playSong();confetti();
     q.textContent='Mulțumesc, șefu’!';
     btns.style.display='none';
     contract.style.display='block';
-    msg.textContent='Contract semnat. Presiune în bată.';
     cnt.textContent=n>0?'Ai cedat după '+n+(n===1?' refuz.':' refuzuri.'):'Din prima. Respect.';
     rs.style.display='inline-block';
     initSig();
   });
   rs.addEventListener('click',function(){
+    stopSong();
     n=0;tx=0;ty=0;no.style.transform='';
     ask();update();
     btns.style.display='flex';contract.style.display='none';signote.textContent='';
